@@ -1,0 +1,54 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  createdAt    DateTime      @default(now())
+  email        String?
+  id           String        @id @default(cuid())
+  name         String?
+  phoneNumber  String?
+  reservations Reservation[]
+  updatedAt    DateTime      @updatedAt
+}
+
+model Reservation {
+  createdAt       DateTime  @default(now())
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  customerId      String?
+  date            DateTime?
+  driver          Driver?   @relation(fields: [driverId], references: [id])
+  driverId        String?
+  dropoffLocation String?
+  id              String    @id @default(cuid())
+  limo            Limo?     @relation(fields: [limoId], references: [id])
+  limoId          String?
+  pickupLocation  String?
+  updatedAt       DateTime  @updatedAt
+}
+
+model Driver {
+  createdAt     DateTime      @default(now())
+  id            String        @id @default(cuid())
+  licenseNumber String?
+  name          String?
+  phoneNumber   String?
+  reservations  Reservation[]
+  updatedAt     DateTime      @updatedAt
+}
+
+model Limo {
+  capacity     Int?
+  createdAt    DateTime      @default(now())
+  id           String        @id @default(cuid())
+  licensePlate String?
+  make         String?
+  model        String?
+  reservations Reservation[]
+  updatedAt    DateTime      @updatedAt
+}
